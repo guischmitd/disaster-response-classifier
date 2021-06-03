@@ -22,6 +22,7 @@ def clean_data(df : pd.DataFrame) -> pd.DataFrame:
         1. Reformat the `categories` column to represent a numeric encoding of all possible classes
         2. Drop the original `categories` column and replace it with the reformated encoding
         3. Check for duplicated messages and remove them from the dataframe
+        4. Drop rows with invalid classes (not in [0, 1])
 
     Arguments:
         df - The loaded and merged dataframe resulting from "load_data"
@@ -53,21 +54,31 @@ def clean_data(df : pd.DataFrame) -> pd.DataFrame:
         n_duplicates = clean_df.duplicated('message').sum()
         assert n_duplicates == 0, f'Dropping duplicated entries failed. There are still {n_duplicates} duplicates in the data'
 
+    # Drop target cols with invalid values and messages with no content (NaN)
+    rows_to_drop = clean_df.message.isna()
+    for col in category_colnames:
+        rows_to_drop = rows_to_drop | (~clean_df[col].isin([0, 1]))
+
+    print(f'Dropping {rows_to_drop.sum()} rows with invalid (non-binary) category values')
+    clean_df = clean_df[~rows_to_drop].copy()
+    clean_df
+
     return clean_df
 
 
-def save_data(df : pd.DataFrame, database_filename : str, 
-              table_name : str ='categorized_messages') -> None:
-      """Saves the DataFrame df in the SQLite database located at `database_filename`"""
+def save_data(df : pd.DataFrame, database_filename : str, table_name : str ='categorized_messages') -> None:
+    """Saves the DataFrame df in the SQLite database located at `database_filename`"""
 
-      conn = sqlite3.connect(database_filename)
-      cur = conn.cursor()
-      cur.execute(f"DROP TABLE IF EXISTS {table_name}")
-      conn.commit()
-      conn.close()
+    # Drop table if it already exists      
+    conn = sqlite3.connect(database_filename)
+    cur = conn.cursor()
+    cur.execute(f"DROP TABLE IF EXISTS {table_name}")
+    conn.commit()
+    conn.close()
 
-      engine = create_engine(f"sqlite:///{database_filename}")
-      df.to_sql(table_name, engine, index=False)
+    # Save the dataframe in the database
+    engine = create_engine(f"sqlite:///{database_filename}")
+    df.to_sql(table_name, engine, index=False)
     
 
 def main():
