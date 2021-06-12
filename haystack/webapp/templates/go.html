@@ -8,17 +8,50 @@
 {% endblock %}
 
 {% block content %}
-    <h1 class="text-center">Result</h1>
+{% set cols = 3 %}
+    <h1 class="text-center">Classification</h1>
         <ul class="list-group">
             {% for category, classification in classification_result.items() %}
-                {% if classification == 1 %}
-                    <li class="list-group-item list-group-item-success text-center">{{category.replace('_', ' ').title()}}</li>
-                {% else %}
-                    <li class="list-group-item list-group-item-dark text-center">{{category.replace('_', ' ').title()}}</li>
+                {% if loop.index0 % cols == 0 %}
+                <div class="row">
                 {% endif %}
-            {% endfor %}
-
+                
+                <div class="col">
+                    {% if classification == 1 %}
+                    <li class="list-group-item list-group-item-primary text-center">{{category.replace('_', ' ').title()}}</li>
+                    {% else %}
+                    <li class="list-group-item list-group-item-dark text-center">{{category.replace('_', ' ').title()}}</li>
+                    {% endif %}
+                </div>
+                
+                {% if (loop.index0 + 1) % cols == 0 %}
+                </div>
+                {% endif %}
+            {% endfor %}    
         </div>
     </div>
+
+    <!--  -->
+<!--     
+
+    {% for category, classification in classification_result.items() %}
+
+        {% if loop.index0 % cols == 0 %}
+            <div class="row">
+        {% endif %}
+
+            <div class="col">
+                <div class="bg-success">
+                    <p>{{loop.index0}} | {{ category.title() }}</p>
+                    <p>{{ classification }}</p>
+                </div>
+            </div>
+
+        {% if (loop.index0 + 1) % cols == 0 %}
+            </div>
+        {% endif %}
+
+    {% endfor %} -->
+    <!--  -->
 
 {% endblock %}
