@@ -5,3 +5,5 @@ sqlalchemy
 matplotlib
 flask
 plotly
+pycountry
+langdetect

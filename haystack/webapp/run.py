@@ -15,6 +15,7 @@ from flask import render_template, request, jsonify
 from plotly.graph_objs import Bar
 import joblib
 from sqlalchemy import create_engine
+from haystack.webapp.dataviz import generate_plots
 
 app = Flask(__name__)
 

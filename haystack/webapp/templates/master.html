@@ -12,6 +12,17 @@
     <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous"> -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+    <style>
+        .watermark {
+           opacity: 0.2;
+        }
+
+        .watermark:hover {
+            opacity: 1.0;
+            transition: opacity 1s;
+        }
+    </style>
 </head>
 
 <body>
@@ -19,7 +30,7 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
             <a class="navbar-brand" href="/">
-                <img src="{{url_for('static', filename='assets/needle-logo.png')}}" width="49" height="49"> 
+                <img src="{{url_for('static', filename='assets/needle-logo_white@0,25x.png')}}" width="35" height="35"> 
                 Haystack
             </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -28,7 +39,6 @@
         
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
-
                 <li class="nav-item">
                     <a class="nav-link" href="https://github.com/guischmitd/disaster-response-classifier">Github</a>
                 </li>
@@ -36,13 +46,33 @@
         </div>
     </nav>
 
-
-
-
 <div class="jumbotron bg-light p-2 m-2">
     <div class="container">
-        <h1 class="text-center">Project Haystack</h1>
-        <p class="text-center">NLP classifier for identifying relevant messages for disaster response</p>
+        <div class="row">
+            <div class="col">
+                <div class="row">
+                    <h1 class="text-left">Project Haystack</h1>
+                    <p class="text-left">
+                        Haystack is a NLP classifier for identifying relevant messages for disaster response.
+                    </p>
+                </div>
+
+                <div class="row">
+                    <p class="text-left">
+                        During a crisis there is a large volume of <b>messages, news, relevant info and cries for help</b> in social media
+                        and direct communication channels. These are the times when the filtering of information is most critical,
+                        since time is of the essence. Project haystack uses a multi-labeled corpus of messages to train a machine
+                        learning model that classifies text in 36 non-exclusive categories.
+                    </p>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-3 col-sm-3">
+                <img class="img-fluid watermark" src="{{url_for('static', filename='assets/needle-logo@0,5x.png')}}" height="70">
+            </div>
+
+
+        </div>
+
         <hr/>
       
         <div class="row">
@@ -89,7 +119,7 @@
 
 <footer class="bg-dark text-light text-center p-3">
     <br>
-    <p><i>Project done as part of the Data Scientist Nanodegree program by Udacity</i></p>
+    <p><i>Project done as part of the Data Scientist Nanodegree program by <a href="https://www.udacity.com/" class="link-light">Udacity</a></i></p>
     <p><i>©️ Needle by priyanka from the Noun Project</i></p>
 </footer>
 
