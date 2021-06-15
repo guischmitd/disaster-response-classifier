@@ -3,6 +3,7 @@ import re
 import pandas as pd
 import joblib
 from sqlalchemy.engine import create_engine
+from typing import List, Tuple
 
 import sys
 from pathlib import Path
@@ -14,6 +15,8 @@ from sklearn.metrics import confusion_matrix, coverage_error, f1_score, precisio
 from sklearn.pipeline import Pipeline, FeatureUnion
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.model_selection import train_test_split
+
+import numpy as np
 
 import nltk
 nltk.download('punkt')
@@ -27,7 +30,7 @@ from nltk.corpus import stopwords
 from haystack.modeling.custom_features import QuestionMarkFeature, TextLengthFeature
 
 
-def load_data(database_filepath):
+def load_data(database_filepath : str) -> Tuple[np.ndarray, np.ndarray, List[str]]:
     engine = create_engine(f'sqlite:///{database_filepath}')
     df = pd.read_sql_table('categorized_messages', engine)
 
@@ -38,7 +41,8 @@ def load_data(database_filepath):
     return X, Y, category_names
 
 
-def tokenize(text):
+def tokenize(text : str) -> List[str]:
+    """Custom tokenization function. Normalizes, removes urls and stopwords and lemmatizes the input `text`"""
     lemmatizer = WordNetLemmatizer()
     stop_words = stopwords.words('english')
     
@@ -60,7 +64,9 @@ def tokenize(text):
     return tokens
 
 
-def build_model():
+def build_model() -> Pipeline:
+    """Builds sklearn Pipeline and sets custom parameters found with GridSeachCV on preparation notebook"""
+
     model = Pipeline([
         ('union', FeatureUnion([
             ('count', Pipeline([
@@ -73,6 +79,7 @@ def build_model():
         ('clf', MultiOutputClassifier(RandomForestClassifier()))
     ])
 
+    # Parameters found using GridSearch on preparation notebook
     model_params = {
         'clf__estimator__class_weight': 'balanced',
         'clf__estimator__max_depth': 8,
@@ -88,7 +95,8 @@ def build_model():
     return model
 
 
-def evaluate_model(model, X_test, Y_test, category_names):
+def evaluate_model(model, X_test, Y_test, category_names : List[str]) -> None:
+    """Performs inference on `X_test` using the provided `model` and prints out precision, recall and f1 metrics for each category"""
     y_pred = model.predict(X_test)
     y_pred = pd.DataFrame(y_pred, columns=category_names)
     print('*** Model Evaluation Results ***')

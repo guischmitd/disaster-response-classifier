@@ -6,7 +6,7 @@ from sqlalchemy.engine import base
 import json
 
 def generate_plots(df : pd.DataFrame) -> Tuple[List[int], List[dict]]:
-    """Generates descriptive plots of the training data for frontend"""
+    """Generates descriptive plots of the training data for the frontend"""
 
     base_layout = {
         'plot_bgcolor': '#212529',

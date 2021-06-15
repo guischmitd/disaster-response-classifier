@@ -8,3 +8,4 @@ plotly
 pycountry
 langdetect
 jupyter
+pytest

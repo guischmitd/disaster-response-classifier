@@ -1,5 +1,3 @@
-import json
-import plotly
 import pandas as pd
 
 import sys
@@ -44,10 +42,8 @@ model = joblib.load(model_path)
 @app.route('/')
 @app.route('/index')
 def index():
-    
     ids, graphJSON = generate_plots(df)
-    
-    # render web page with plotly graphs
+
     return render_template('master.html', ids=ids, graphJSON=graphJSON)
 
 
