@@ -1,7 +1,11 @@
 import sys
 import pandas as pd
+from tqdm import tqdm
 from sqlalchemy import create_engine
 import sqlite3
+import langdetect
+import pycountry as pc
+tqdm.pandas()
 
 
 def load_data(messages_filepath : str, categories_filepath : str):
@@ -81,6 +85,26 @@ def save_data(df : pd.DataFrame, database_filename : str, table_name : str ='cat
     df.to_sql(table_name, engine, index=False)
     
 
+def detect_language(text : str or None) -> str:
+    """
+    Detects a given text's language. 
+    Returns `None` in case of exceptions or when input is nan, None or an empty string
+    """
+    
+    lang = None
+    if str(text).lower() not in ['', 'nan', 'none']:
+        try:
+            guess = langdetect.detect(text)
+            lang = pc.languages.get(alpha_2=guess)
+            if lang is not None:
+                lang = lang.name
+
+        except Exception as e:
+            print(f'TEXT: {text}\n    Raised Exception: {e}')
+    
+    return lang
+
+
 def main():
     if len(sys.argv) == 4:
 
@@ -92,6 +116,9 @@ def main():
 
         print('Cleaning data...')
         df = clean_data(df)
+
+        print('Detecting original languages...')
+        df['original_language'] = df.original.progress_map(detect_language)
         
         print('Saving data...\n    DATABASE: {}'.format(database_filepath))
         save_data(df, database_filepath)
